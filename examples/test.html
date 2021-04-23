@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 源码解读</title>
+</head>
+<body>
+    <div id="app">
+        {{msg}}
+    </div>
+    <script src="../dist/vue.js"></script>
+    <script>
+        let me
+        new Vue({
+            el:'#app',
+            mixin:[],
+            props:['a'],
+            data(){
+                return{
+                    msg:'hello Vue!'
+                }
+            },
+            watch:{},
+            computed:{},
+            beforeCreate(){},
+            created(){
+                me=this
+            },
+            beforeMount(){},
+            mounted(){
+            },
+            beforeDestroy(){},
+            destroyed(){},
+            motheds:{
+                firstFun(){},
+            },
+        })
+    </script>
+</body>
+</html>

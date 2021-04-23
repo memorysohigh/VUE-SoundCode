@@ -46,6 +46,7 @@ if (process.env.NODE_ENV !== 'production') {
 /**
  * Helper that recursively merges two data objects together.
  */
+
 function mergeData (to: Object, from: ?Object): Object {
   if (!from) return to
   let key, toVal, fromVal
@@ -76,11 +77,14 @@ function mergeData (to: Object, from: ?Object): Object {
 /**
  * Data
  */
-export function mergeDataOrFn (
+
+export function mergeDataOrFn(
   parentVal: any,
+  // ***data函数
   childVal: any,
   vm?: Component
 ): ?Function {
+  // console.log(parentVal, childVal);//childVal：data函数
   if (!vm) {
     // in a Vue.extend merge, both should be functions
     if (!childVal) {
@@ -131,22 +135,22 @@ strats.data = function (
         'definitions.',
         vm
       )
-
       return parentVal
     }
     return mergeDataOrFn(parentVal, childVal)
   }
-
   return mergeDataOrFn(parentVal, childVal, vm)
 }
 
 /**
  * Hooks and props are merged as arrays.
  */
+// ***合并生命周期函数
 function mergeHook (
   parentVal: ?Array<Function>,
   childVal: ?Function | ?Array<Function>
 ): ?Array<Function> {
+  // console.log(parentVal, childVal); //beforeCreate、created、beforeMount、mounted、beforeDestroy、destroyed
   const res = childVal
     ? parentVal
       ? parentVal.concat(childVal)
@@ -160,7 +164,8 @@ function mergeHook (
 }
 
 function dedupeHooks (hooks) {
-  const res = []
+  // console.log(hooks,'hooks');
+  const res = []//钩子函数数组
   for (let i = 0; i < hooks.length; i++) {
     if (res.indexOf(hooks[i]) === -1) {
       res.push(hooks[i])
@@ -180,6 +185,7 @@ LIFECYCLE_HOOKS.forEach(hook => {
  * a three-way merge between constructor options, instance
  * options and parent options.
  */
+// ***添加指令(directives)、组件(components)、过滤器(filters)等选项的合并
 function mergeAssets (
   parentVal: ?Object,
   childVal: ?Object,

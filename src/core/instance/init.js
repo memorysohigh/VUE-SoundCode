@@ -29,6 +29,11 @@ export function initMixin (Vue: Class<Component>) {
     // a flag to avoid this being observed
     vm._isVue = true
     // merge options
+
+
+    // ***在使用 Vue 开发项目的时候，我们是不会使用 _isComponent 选项
+    // ***的，这个选项是 Vue 内部使用的，按照本节开头的例子，这里会走
+    // ***else 分支，也就是这段代码：
     if (options && options._isComponent) {
       // optimize internal component instantiation
       // since dynamic options merging is pretty slow, and none of the
@@ -36,6 +41,9 @@ export function initMixin (Vue: Class<Component>) {
       initInternalComponent(vm, options)
     } else {
       vm.$options = mergeOptions(
+        // ***第一个参数就是 Vue.constructor.options（resolveConstructorOptions返回的是Vue.constructor.options）
+        // ***第二个参数是我们调用Vue构造函数时的参数选项
+        // ***第三个参数是 vm 也就是 this 对象
         resolveConstructorOptions(vm.constructor),
         options || {},
         vm
@@ -92,6 +100,8 @@ export function initInternalComponent (vm: Component, options: InternalComponent
 
 export function resolveConstructorOptions (Ctor: Class<Component>) {
   let options = Ctor.options
+  // ***vue构造函数上没找到options
+  // ***console.log(999999999, Object.hasOwnProperty(Ctor.prototype,Ctor));
   if (Ctor.super) {
     const superOptions = resolveConstructorOptions(Ctor.super)
     const cachedSuperOptions = Ctor.superOptions
