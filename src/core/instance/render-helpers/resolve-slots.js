@@ -8,7 +8,7 @@ import type VNode from 'core/vdom/vnode'
 export function resolveSlots (
   children: ?Array<VNode>,
   context: ?Component
-): { [key: string]: Array<VNode> } {
+): { [key: string]: Array<VNode> } {//***返回节点数组对象
   if (!children || !children.length) {
     return {}
   }

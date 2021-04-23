@@ -57,12 +57,12 @@ export function initMixin (Vue: Class<Component>) {
     }
     // expose real self
     vm._self = vm
-    initLifecycle(vm)
-    initEvents(vm)
+    initLifecycle(vm) //***这个函数的作用就是在实例上添加一些属性：parent、root、children、refs、_watcher、_inactive、_directInactive、_isMounted
+    initEvents(vm)//***this.$emit/once/on/off都在这里
     initRender(vm)
     callHook(vm, 'beforeCreate')
     initInjections(vm) // resolve injections before data/props
-    initState(vm)
+    initState(vm)//实例上的属性：data,watch,computed,methods
     initProvide(vm) // resolve provide after data/props
     callHook(vm, 'created')
 

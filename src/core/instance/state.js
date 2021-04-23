@@ -45,6 +45,7 @@ export function proxy (target: Object, sourceKey: string, key: string) {
   Object.defineProperty(target, key, sharedPropertyDefinition)
 }
 
+// 这里判断，调用下面的初始化函数
 export function initState (vm: Component) {
   vm._watchers = []
   const opts = vm.$options
@@ -61,6 +62,7 @@ export function initState (vm: Component) {
   }
 }
 
+// 这些都是初始化函数
 function initProps (vm: Component, propsOptions: Object) {
   const propsData = vm.$options.propsData || {}
   const props = vm._props = {}
