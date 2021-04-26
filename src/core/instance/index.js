@@ -5,6 +5,7 @@ import { eventsMixin } from './events'
 import { lifecycleMixin } from './lifecycle'
 import { warn } from '../util/index'
 
+// ****Vue构造函数
 // new Vue时传进来的data、钩子函数、methods、watch、computed。。。。
 function Vue (options) {
 // 安全提示  告诉开发者必须使用 new 操作符调用 Vue。

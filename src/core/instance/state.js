@@ -34,17 +34,41 @@ const sharedPropertyDefinition = {
   get: noop,
   set: noop
 }
+// ***与下面一样 */
+// function proxy(vm: Component, key: string) {
+//   console.log(1111111111);
+//   if (!isReserved(key)) {
+//     Object.defineProperty(vm, key, {
+//       configurable: true,
+//       enumerable: true,
+//       get: function proxyGetter() {
+//         return vm._data[key]
+//       },
+//       set: function proxySetter(val) {
+//         vm._data[key] = val
+//       }
+//     })
+//   }
+// }
 
-export function proxy (target: Object, sourceKey: string, key: string) {
+
+// ####没看懂####没看懂#####没看懂####
+export function proxy (target: Object, sourceKey: string, key: string, nu: Number) {
+  // console.log(this, sourceKey, key, nu);
+  // console.log('//////////////////////////');
   sharedPropertyDefinition.get = function proxyGetter () {
+    // console.log(this);//proxy
+    // return this._data[key]
     return this[sourceKey][key]
   }
   sharedPropertyDefinition.set = function proxySetter (val) {
+    // this[key] = this._data[key]||this.$data[key]
     this[sourceKey][key] = val
   }
   Object.defineProperty(target, key, sharedPropertyDefinition)
 }
 
+//实例上的属性：data,watch,computed,methods
 // 这里判断，调用下面的初始化函数
 export function initState (vm: Component) {
   vm._watchers = []
@@ -124,11 +148,14 @@ function initData (vm: Component) {
       vm
     )
   }
+
   // proxy data on instance
   const keys = Object.keys(data)
   const props = vm.$options.props
   const methods = vm.$options.methods
   let i = keys.length
+
+  //***循环的目的是在实例对象上对数据进行代理，这样我们就能通过 this.a 来访问 data.a 了，代码的处理是在 proxy 函数中 */
   while (i--) {
     const key = keys[i]
     if (process.env.NODE_ENV !== 'production') {
@@ -149,8 +176,10 @@ function initData (vm: Component) {
       proxy(vm, `_data`, key)
     }
   }
+
   // observe data
-  observe(data, true /* asRootData */)
+  // ****Vue的数据响应系统
+  observe(data, true /* data:vue实例的data */)
 }
 
 export function getData (data: Function, vm: Component): any {

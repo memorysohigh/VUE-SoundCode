@@ -29,12 +29,12 @@ export function toggleObserving (value: boolean) {
 }
 
 /**
- * Observer class that is attached to each observed
- * object. Once attached, the observer converts the target
- * object's property keys into getter/setters that
- * collect dependencies and dispatch updates.
+ * 观察者类， 它附加到每个被观察的对象上
+ * 对象。 一旦连接， 观察者转换目标
+ *对象的属性键到getter / setter
+ *收集依赖项和调度更新。
  */
-export class Observer {
+export class Observer { //observer 的作用是：将数据对象data的属性转换为访问器属性
   value: any;
   dep: Dep;
   vmCount: number; // number of vms that have this object as root $data
@@ -109,6 +109,7 @@ function copyAugment (target: Object, src: Object, keys: Array<string>) {
  */
 export function observe (value: any, asRootData: ?boolean): Observer | void {
   if (!isObject(value) || value instanceof VNode) {
+    // value 不是对象，或者value是元素节点直接return
     return
   }
   let ob: Observer | void

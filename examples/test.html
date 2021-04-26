@@ -12,6 +12,21 @@
   <div id="app">
     {{msg}}
     <component-a v-model="a" v-bind:b="b" @input></component-a>
+    <component-b></component-b>
+    <blog-post>
+      <template v-slot:header>
+        <h1>About Me</h1>
+      </template>
+
+      <p>Here's some page content, which will be included in vm.$slots.default, because it's not inside a named slot.
+      </p>
+
+      <template v-slot:footer>
+        <p>Copyright 2016 Evan You</p>
+      </template>
+
+      <p>If I have some content down here, it will also be included in vm.$slots.default.</p>
+    </blog-post>
   </div>
   <script src="../dist/vue.js"></script>
   <script>
@@ -44,12 +59,31 @@
       }
 
     }
-
+    const blogPost = Vue.component('blog-post', {
+      render: function (createElement) {
+        var header = this.$slots.header
+        var body = this.$slots.default
+        var footer = this.$slots.footer
+        return createElement('div', [
+          createElement('header', header),
+          createElement('main', body),
+          createElement('footer', footer)
+        ])
+      }
+    })
     new Vue({
       el: '#app',
       mixin: [],
       components: {
-        componentA: componentA
+        componentA: componentA,
+        blogPost,
+        componentB: {
+          render(createElement) {
+            return createElement('div', {
+              id: 'asd'
+            }, 'render')
+          },
+        }
       },
       data() {
         return {
@@ -79,5 +113,93 @@
 
   </script>
 </body>
+
+<script>
+  class Observer {
+    constructor(data) {
+      this.walk(data)
+    }
+    walk(data) {
+      // 遍历 data 对象属性，调用 defineReactive 方法转换为访问器属性
+      let keys = Object.keys(data)
+      for (let i = 0; i < keys.length; i++) {
+        defineReactive(data, keys[i], data[keys[i]])
+      }
+    }
+  }
+
+  class Dep {
+    constructor() {
+      this.subs = []
+    }
+    addSub() {
+      this.subs.push(Dep.target)
+    }
+    notify() {
+      for (let i = 0; i < this.subs.length; i++) {
+        this.subs[i].fn()
+      }
+    }
+  }
+
+  class Watch {
+    constructor(exp, fn) {
+      this.exp = exp
+      this.fn = fn
+      pushTarget(this)
+      data[exp]
+    }
+  }
+
+  Dep.target = null
+
+  function pushTarget(watch) {
+    Dep.target = watch
+  }
+
+  // defineReactive方法仅仅将data的属性转换为访问器属性
+  function defineReactive(data, key, val) {
+    observer(val)
+    let dep = new Dep() // 新增
+    // dep = {
+    // subs: [],
+    // addsub() {
+    // this.subs.push(Dep.target)
+    // },
+    // notify() {
+    // for (let i = 0; i < this.subs.length; i++) {
+    //       this.subs[i].fn()
+    //     }
+    //   },
+    // }
+    Object.defineProperty(data, key, {
+      enumerable: true,
+      configurable: true,
+      get: function () {
+        dep.addSub() // 新增
+        return val
+      },
+      set: function (newVal) {
+        if (val === newVal) {
+          return
+        }
+        observer(newVal)
+        dep.notify() // 新增
+      }
+    })
+  }
+  new Watch('a', () => {
+    alert(9)
+  })
+
+  // observer 方法首先判断data是不是纯JavaScript对象，如果是，调用 Observer 类进行观测
+  function observer(data) {
+    if (Object.prototype.toString.call(data) !== '[object Object]') {
+      return
+    }
+    new Observer(data)
+  }
+
+</script>
 
 </html>
