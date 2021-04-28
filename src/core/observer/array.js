@@ -5,9 +5,9 @@
 
 import { def } from '../util/index'
 
-const arrayProto = Array.prototype
-export const arrayMethods = Object.create(arrayProto)
+export const arrayMethods = Object.create(Array.prototype)
 
+    // 数组方法名methodsName
 const methodsToPatch = [
   'push',
   'pop',
@@ -18,13 +18,13 @@ const methodsToPatch = [
   'reverse'
 ]
 
-/**
- * Intercept mutating methods and emit events
- */
+// 遍历数组方法名methodsName
+// 添加到重写的数组原型对象arrayMethods
 methodsToPatch.forEach(function (method) {
   // cache original method
-  const original = arrayProto[method]
+  const original = Array.prototype[method]
   def(arrayMethods, method, function mutator (...args) {
+    // 调用数组原型上的的方法，改变指向到当前数组 this：当前数组 ...args：当前数组的参数
     const result = original.apply(this, args)
     const ob = this.__ob__
     let inserted

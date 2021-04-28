@@ -10,7 +10,8 @@
 
 <body>
   <div id="app">
-    {{msg}}
+    <div>{{msg}}</div>
+    <p style="display: inline;">{{mm}}</p><button @click='mm.push(33)'>添加33</button>
     <component-a v-model="a" v-bind:b="b" @input></component-a>
     <component-b></component-b>
     <blog-post>
@@ -92,6 +93,7 @@
             n: 1,
             m: 2
           },
+            mm:[1,2,3,4,5,6],
           msg: 'hello Vue!'
         }
 
@@ -101,6 +103,7 @@
       beforeCreate() {},
       created() {
         me = this
+        me.mm.push(33)
       },
       beforeMount() {},
       mounted() {},
@@ -114,92 +117,6 @@
   </script>
 </body>
 
-<script>
-  class Observer {
-    constructor(data) {
-      this.walk(data)
-    }
-    walk(data) {
-      // 遍历 data 对象属性，调用 defineReactive 方法转换为访问器属性
-      let keys = Object.keys(data)
-      for (let i = 0; i < keys.length; i++) {
-        defineReactive(data, keys[i], data[keys[i]])
-      }
-    }
-  }
 
-  class Dep {
-    constructor() {
-      this.subs = []
-    }
-    addSub() {
-      this.subs.push(Dep.target)
-    }
-    notify() {
-      for (let i = 0; i < this.subs.length; i++) {
-        this.subs[i].fn()
-      }
-    }
-  }
-
-  class Watch {
-    constructor(exp, fn) {
-      this.exp = exp
-      this.fn = fn
-      pushTarget(this)
-      data[exp]
-    }
-  }
-
-  Dep.target = null
-
-  function pushTarget(watch) {
-    Dep.target = watch
-  }
-
-  // defineReactive方法仅仅将data的属性转换为访问器属性
-  function defineReactive(data, key, val) {
-    observer(val)
-    let dep = new Dep() // 新增
-    // dep = {
-    // subs: [],
-    // addsub() {
-    // this.subs.push(Dep.target)
-    // },
-    // notify() {
-    // for (let i = 0; i < this.subs.length; i++) {
-    //       this.subs[i].fn()
-    //     }
-    //   },
-    // }
-    Object.defineProperty(data, key, {
-      enumerable: true,
-      configurable: true,
-      get: function () {
-        dep.addSub() // 新增
-        return val
-      },
-      set: function (newVal) {
-        if (val === newVal) {
-          return
-        }
-        observer(newVal)
-        dep.notify() // 新增
-      }
-    })
-  }
-  new Watch('a', () => {
-    alert(9)
-  })
-
-  // observer 方法首先判断data是不是纯JavaScript对象，如果是，调用 Observer 类进行观测
-  function observer(data) {
-    if (Object.prototype.toString.call(data) !== '[object Object]') {
-      return
-    }
-    new Observer(data)
-  }
-
-</script>
 
 </html>

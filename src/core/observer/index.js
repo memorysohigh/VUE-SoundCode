@@ -4,7 +4,7 @@ import Dep from './dep'
 import VNode from '../vdom/vnode'
 import {
   arrayMethods
-} from './array' //数组的原型对象实例Object.create(Array.prototype)
+} from './array' //重写的数组原型对象实例Object.create(Array.prototype)
 import {
   def,
   warn,
@@ -18,6 +18,7 @@ import {
   isServerRendering
 } from '../util/index'
 
+// 获取重写数组原型的7个方法名字
 const arrayKeys = Object.getOwnPropertyNames(arrayMethods)
 
 /**
@@ -45,7 +46,7 @@ export class Observer { //observer 的作用是：将数据对象data的属性�
     this.value = value
     this.dep = new Dep()
     this.vmCount = 0
-    // 在 value 对象上设置 __ob__ 属性
+    // 在 value 对象上设置 __ob__ 属性，并且是不可遍历的enumerable=false
     def(value, '__ob__', this)
     if (Array.isArray(value)) {
       /**
@@ -58,6 +59,7 @@ export class Observer { //observer 的作用是：将数据对象data的属性�
        */
       if (hasProto) { //****hasProto = '__proto__' in {}
         // 有 __proto__
+        // 改变obj的原型为我们重写的arrayMethods（重写的7个数组方法push,pop,shift,unshift,sort,reverse）
         protoAugment(value, arrayMethods) //value.__proto__ = arrayMethods
       } else {
         copyAugment(value, arrayMethods, arrayKeys)
@@ -76,6 +78,7 @@ export class Observer { //observer 的作用是：将数据对象data的属性�
   walk(obj: Object) {
     const keys = Object.keys(obj)
     for (let i = 0; i < keys.length; i++) {
+      //defineReactive第一次开始调用
       defineReactive(obj, keys[i])
     }
   }
@@ -154,7 +157,7 @@ export function defineReactive(
   key: string,
   // *************************************************************************************************************
   // *************************************************************************************************************
-  // *******val的三个作用， 1、外部传进来的2、 判断是否与旧值一样触发set3、 获取值的时候触发get， 把valreturn出去*******
+  // *******val的三个作用， 1、外部传进来的2、 判断是否与旧值一样触发set3、 获取值的时候触发get， 把val return出去*******
   // *************************************************************************************************************
   // *************************************************************************************************************
   val: any, //传进来的值，在set里面判断，与旧值一样你直接return，不一样就修改，然后get里面获取的时候，就得到了这个val。
@@ -178,7 +181,10 @@ export function defineReactive(
   }
 
   // 递归调用，处理 val 即 obj[key] 的值为对象的情况，保证对象中的所有 key 都被观察
+  // obj的子对象属性递归回去调observe
+  // 如果子属性不是对象，observe函数里会判定，然后直接return
   let childOb = !shallow && observe(val)
+
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
@@ -225,7 +231,18 @@ export function defineReactive(
       } else {
         val = newVal
       }
+
       // 对新值进行观察，让新值也是响应式的
+      //newValue回去调observe
+      // 如果不是对象的话，observe函数里会判定，然后直接return，是的话，从observe再来到这
+/*
+*递归顺序：
+*/ // observe（）  ==>  看obj有无__ob__  =无=> new Observer（） ==> defineReactive（）
+                                                   //^^
+                                                   //||
+//****************************************** // 在obj上设置不可遍历的__ob__******************************************
+//**********************//Observer的作用》》》// 遍历obj上的所有属性，调用******************************************
+//****************************************** // defineReactive设置响应式******************************************
       childOb = !shallow && observe(newVal)
       // 依赖通知更新
       dep.notify()
