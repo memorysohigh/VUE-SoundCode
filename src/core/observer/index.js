@@ -18,8 +18,6 @@ import {
   isServerRendering
 } from '../util/index'
 
-// 获取重写数组原型的7个方法名字
-const arrayKeys = Object.getOwnPropertyNames(arrayMethods)
 
 /**
  * In some cases we may want to disable observation inside a component's
@@ -62,7 +60,9 @@ export class Observer { //observer 的作用是：将数据对象data的属性�
         // 改变obj的原型为我们重写的arrayMethods（重写的7个数组方法push,pop,shift,unshift,sort,reverse）
         protoAugment(value, arrayMethods) //value.__proto__ = arrayMethods
       } else {
-        copyAugment(value, arrayMethods, arrayKeys)
+        // 遍历数组原型的7个方法名字
+        // 把七个重写好的数组方法设置到每个数组上
+        copyAugment(value, arrayMethods, Object.getOwnPropertyNames(arrayMethods))
       }
       this.observeArray(value)
     } else {
@@ -105,15 +105,11 @@ function protoAugment(target, src: Object) {
   /* eslint-enable no-proto */
 }
 
-/**
- * Augment a target Object or Array by defining
- * hidden properties.
- */
-/* istanbul ignore next */
 function copyAugment(target: Object, src: Object, keys: Array < string > ) {
   for (let i = 0, l = keys.length; i < l; i++) {
-    const key = keys[i]
-    def(target, key, src[key])
+    const key = keys[i] //方法名
+    // 把七个重写好的数组方法设置到每个数组上
+    def(target, key, src[key]) //src[key]:重写后的方法
   }
 }
 
@@ -235,14 +231,14 @@ export function defineReactive(
       // 对新值进行观察，让新值也是响应式的
       //newValue回去调observe
       // 如果不是对象的话，observe函数里会判定，然后直接return，是的话，从observe再来到这
-/*
-*递归顺序：
-*/ // observe（）  ==>  看obj有无__ob__  =无=> new Observer（） ==> defineReactive（）
-                                                   //^^
-                                                   //||
-//****************************************** // 在obj上设置不可遍历的__ob__******************************************
-//**********************//Observer的作用》》》// 遍历obj上的所有属性，调用******************************************
-//****************************************** // defineReactive设置响应式******************************************
+      /*
+       *递归顺序：
+       */ // observe（）  ==>  看obj有无__ob__  =无=> new Observer（） ==> defineReactive（）
+      //^^
+      //||
+      //****************************************** // 在obj上设置不可遍历的__ob__******************************************
+      //**********************//Observer的作用》》》// 遍历obj上的所有属性，调用******************************************
+      //****************************************** // defineReactive设置响应式******************************************
       childOb = !shallow && observe(newVal)
       // 依赖通知更新
       dep.notify()
