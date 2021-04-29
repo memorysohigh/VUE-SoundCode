@@ -79,6 +79,7 @@ export default class Watcher {
     if (typeof expOrFn === 'function') {
       this.getter = expOrFn
     } else {
+      // 拆分点语法this.getter 读值 触发data通过defineProperty设置的getter，在里面把Watcher收集到Dep的subs中去
       this.getter = parsePath(expOrFn)
       if (!this.getter) {
         this.getter = noop
@@ -98,12 +99,14 @@ export default class Watcher {
   /**
    * Evaluate the getter, and re-collect dependencies.
    */
+  // 依赖收集阶段
   get () {
     pushTarget(this)
     let value
     const vm = this.vm
+    // 得把自己放到全局的Dep.target里去
     try {
-      value = this.getter.call(vm, vm)
+      value = this.getter.call(vm, vm) //然后在读值 触发data通过defineProperty设置的getter，在里面把Watcher收集到Dep的subs中去
     } catch (e) {
       if (this.user) {
         handleError(e, vm, `getter for watcher "${this.expression}"`)
@@ -118,6 +121,8 @@ export default class Watcher {
       }
       popTarget()
       this.cleanupDeps()
+      // 退出依赖收集阶段，让给别的Watcher
+      //相当于 Dep.target = null
     }
     return value
   }
@@ -161,6 +166,7 @@ export default class Watcher {
    * Subscriber interface.
    * Will be called when a dependency changes.
    */
+  // 通过data设置的setter函数触发的dep.notify()来更新
   update () {
     /* istanbul ignore else */
     if (this.lazy) {
@@ -179,6 +185,7 @@ export default class Watcher {
   run () {
     if (this.active) {
       const value = this.get()
+      // 如果更改的值和旧值不一样就set new value
       if (
         value !== this.value ||
         // Deep watchers and watchers on Object/Arrays should fire even
@@ -241,3 +248,4 @@ export default class Watcher {
     }
   }
 }
+

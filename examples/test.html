@@ -11,6 +11,7 @@
 <body>
   <div id="app">
     <div>{{msg}}</div>
+    <div>{{b.n}}</div>
     <p style="display: inline;">{{mm}}</p><button @click='mm.push(33)'>添加33</button>
     <component-a v-model="a" v-bind:b="b" @input></component-a>
     <component-b></component-b>
@@ -91,7 +92,7 @@
           a: 'father',
           b: {
             n: 1,
-            m: 2
+            m: 2,
           },
             mm:[1,2,3,4,5,6],
           msg: 'hello Vue!'

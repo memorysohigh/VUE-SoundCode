@@ -1,7 +1,9 @@
 /* @flow */
 
-import type Watcher from './watcher'
-import { remove } from '../util/index'
+import type Watcher from './Watcher'
+import {
+  remove
+} from '../util/index'
 import config from '../config'
 
 let uid = 0
@@ -11,30 +13,33 @@ let uid = 0
  * directives subscribing to it.
  */
 export default class Dep {
-  static target: ?Watcher;
+  static target: ? Watcher;
   id: number;
-  subs: Array<Watcher>;
+  subs: Array < Watcher > ;
 
-  constructor () {
+  constructor() {
     this.id = uid++
-    this.subs = []
+    this.subs = [] //Watcher数组，存放的都是Watcher实例
   }
-
-  addSub (sub: Watcher) {
+  // 添加订阅
+  addSub(sub: Watcher) {
     this.subs.push(sub)
   }
-
-  removeSub (sub: Watcher) {
+  // 移除依赖（Watcher）
+  removeSub(sub: Watcher) {
     remove(this.subs, sub)
   }
-
-  depend () {
+  // 添加依赖（Watcher） 调用的是this.addSub
+  depend() {
+    // 如果处于依赖的收集阶段
+    // Dep.target就是一个我们自己指定的全局位置，用Windows.target也行，只要是全局唯一，没有歧义就行
     if (Dep.target) {
-      Dep.target.addDep(this)
+      Dep.target.addDep(this) //函数的最后就是addSub(this)，这里的this就是Dep.target就是Watcher
+      // this.addSub(Dep.target)  bilibili 上是这么写的，
     }
   }
 
-  notify () {
+  notify() {
     // stabilize the subscriber list first
     const subs = this.subs.slice()
     if (process.env.NODE_ENV !== 'production' && !config.async) {
@@ -49,18 +54,19 @@ export default class Dep {
   }
 }
 
-// The current target watcher being evaluated.
-// This is globally unique because only one watcher
+// The current target Watcher being evaluated.
+// This is globally unique because only one Watcher
 // can be evaluated at a time.
+//全局暂时存放Watcher的地方，一次只放一个
 Dep.target = null
 const targetStack = []
 
-export function pushTarget (target: ?Watcher) {
+export function pushTarget(target: ? Watcher) {
   targetStack.push(target)
   Dep.target = target
 }
 
-export function popTarget () {
+export function popTarget() {
   targetStack.pop()
   Dep.target = targetStack[targetStack.length - 1]
 }

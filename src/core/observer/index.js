@@ -148,6 +148,7 @@ export function observe(value: any, asRootData: ? boolean): Observer | void {
  *   1、在第一次读取时收集依赖，比如执行 render 函数生成虚拟 DOM 时会有读取操作
  *   2、在更新时设置新值并通知依赖更新
  */
+var count = 0
 export function defineReactive(
   obj: Object,
   key: string,
@@ -160,9 +161,8 @@ export function defineReactive(
   customSetter ? : ? Function,
   shallow ? : boolean
 ) {
-  // 实例化 dep，一个 key 一个 dep
+  // 实例化 Dep，每一个 对象 都实例化一个 Dep
   const dep = new Dep()
-
   // 获取 obj[key] 的属性描述符，发现它 configurable=false 的话直接 return
   const property = Object.getOwnPropertyDescriptor(obj, key) //属性配置对象 描述符对象
   if (property && property.configurable === false) {
@@ -179,6 +179,7 @@ export function defineReactive(
   // 递归调用，处理 val 即 obj[key] 的值为对象的情况，保证对象中的所有 key 都被观察
   // obj的子对象属性递归回去调observe
   // 如果子属性不是对象，observe函数里会判定，然后直接return
+  // 提前把__ob__返回回来添加Watcher
   let childOb = !shallow && observe(val)
 
   Object.defineProperty(obj, key, {
@@ -186,12 +187,9 @@ export function defineReactive(
     configurable: true,
     get: function reactiveGetter() {
       const value = getter ? getter.call(obj) : val
-      /**
-       * Dep.target 为 Dep 类的一个静态属性，值为 watcher，在实例化 Watcher 时会被设置
-       * 实例化 Watcher 时会执行 new Watcher 时传递的回调函数（computed 除外，因为它懒执行）
-       * 而回调函数中如果有 vm.key 的读取行为，则会触发这里的 读取 拦截，进行依赖收集
-       * 回调函数执行完以后又会将 Dep.target 设置为 null，避免这里重复收集依赖
-       */
+      // 判断是不是watcher触发的getter，是的话Dep.target里面肯定有Watcher，
+      // 于是把Watcher添加到Dep中去
+      // 不是的话直接返回值
       if (Dep.target) {
         // 依赖收集，在 dep 中添加 watcher，也在 watcher 中添加 dep
         dep.depend()

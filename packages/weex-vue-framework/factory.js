@@ -4742,6 +4742,7 @@ Watcher.prototype.update = function update () {
  * Will be called by the scheduler.
  */
 Watcher.prototype.run = function run () {
+  console.log('factory',this.value);
   if (this.active) {
     var value = this.get();
     if (
