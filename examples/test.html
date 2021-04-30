@@ -28,9 +28,15 @@
       </template>
 
       <p>If I have some content down here, it will also be included in vm.$slots.default.</p>
+
     </blog-post>
+    <div>nm
+      <input type="text" v-model='nm'>
+    </div>
+    <div id='div'></div>
   </div>
   <script src="../dist/vue.js"></script>
+
   <script>
     let me
     const componentA = {
@@ -100,7 +106,16 @@
 
       },
       watch: {},
-      computed: {},
+      computed: {
+        nm:{
+          get(){
+            return this.b.n+this.b.m
+          },
+          set(newVal){
+
+          }
+        }
+      },
       beforeCreate() {},
       created() {
         me = this
@@ -115,6 +130,17 @@
       },
     })
 
+  </script>
+  <script>
+    vue.obj = {
+      name: 'obj',
+      age: 16
+    }
+    vue.observeFun(vue.obj)
+    let b = new vue.watcherConstructor(vue, 'obj', () => {
+      console.log('响应式已经应用！！！')
+    })
+    let node = document.getElementById('div').append(document.createElement("obj.name<input type='text' v-model='obj.name'>"))
   </script>
 </body>
 

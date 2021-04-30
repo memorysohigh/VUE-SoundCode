@@ -25,6 +25,10 @@ import type {
   SimpleSet
 } from '../util/index'
 
+import Vue from '../instance/index'
+import {observe} from '../observer/index'
+
+
 let uid = 0
 
 /**
@@ -81,15 +85,13 @@ export default class Watcher {
     this.newDeps = []
     this.depIds = new Set()
     this.newDepIds = new Set()
-    this.expression = process.env.NODE_ENV !== 'production' ?
-      expOrFn.toString() :
-      ''
+    this.expression = process.env.NODE_ENV !== 'production' ? expOrFn.toString() : ''
     // parse expression for getter
     if (typeof expOrFn === 'function') {
       this.getter = expOrFn
     } else {
       // 拆分点语法this.getter 读值 触发data通过defineProperty设置的getter，在里面把Watcher收集到Dep的subs中去
-      this.getter = parsePath(expOrFn)//getter是用来触发data里的属性的get函数
+      this.getter = parsePath(expOrFn) //getter是用来触发data里的属性的get函数
       if (!this.getter) {
         this.getter = noop
         process.env.NODE_ENV !== 'production' && warn(
@@ -258,3 +260,6 @@ export default class Watcher {
     }
   }
 }
+
+Vue.prototype.observeFun = observe
+Vue.prototype.watcherConstructor = Watcher
