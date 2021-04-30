@@ -66,6 +66,10 @@ export function initMixin (Vue: Class<Component>) {
     initRender(vm) // ****解析组件的插槽信息，得到 vm.$slot，处理渲染函数，得到 vm.$createElement 方法，即 h 函数
     callHook(vm, 'beforeCreate') // 调用 beforeCreate 钩子函数
     initInjections(vm) // // 初始化组件的 inject 配置项，得到 result[key] = val 形式的配置对象，然后对结果数据进行响应式处理，并代理每个 key 到 vm 实例
+    /**
+     * @响应式2
+     * 从这里开始进入， 数据响应式的重点
+     */
     initState(vm) // 数据响应式的重点，处理 props、methods、data、computed、watch
     initProvide(vm) // 解析组件配置项上的 provide 对象，将其挂载到 vm._provided 属性上
     callHook(vm, 'created') // 调用 created 钩子函数

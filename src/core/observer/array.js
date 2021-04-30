@@ -20,6 +20,9 @@ const methodsToPatch = [
   'reverse'
 ]
 
+/**
+ * @响应式12
+ */
 // 遍历数组方法名methodsName
 // 添加到重写的数组原型对象arrayMethods
 methodsToPatch.forEach(function (method) {

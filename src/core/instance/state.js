@@ -69,6 +69,9 @@ export function proxy(target: Object, sourceKey: string, key: string) { //(targe
   Object.defineProperty(target, key, sharedPropertyDefinition)
 }
 
+
+
+
 /**
  * 两件事：
  *   数据响应式的入口：分别处理 props、methods、data、computed、watch
@@ -93,6 +96,10 @@ export function initState(vm: Component) {
     initData(vm)
   } else {
 
+    /**
+     * @响应式4
+     * 调用observe
+     */
     // ※ ※ ※ ※ 为 data 对象上的数据设置响应式
     observe(vm._data = {}, true /* asRootData */ )
   }

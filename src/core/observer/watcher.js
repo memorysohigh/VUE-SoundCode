@@ -10,11 +10,20 @@ import {
   noop
 } from '../util/index'
 
-import { traverse } from './traverse'
-import { queueWatcher } from './scheduler'
-import Dep, { pushTarget, popTarget } from './dep'
+import {
+  traverse
+} from './traverse'
+import {
+  queueWatcher
+} from './scheduler'
+import Dep, {
+  pushTarget,
+  popTarget
+} from './dep'
 
-import type { SimpleSet } from '../util/index'
+import type {
+  SimpleSet
+} from '../util/index'
 
 let uid = 0
 
@@ -34,20 +43,20 @@ export default class Watcher {
   sync: boolean;
   dirty: boolean;
   active: boolean;
-  deps: Array<Dep>;
-  newDeps: Array<Dep>;
+  deps: Array < Dep > ;
+  newDeps: Array < Dep > ;
   depIds: SimpleSet;
   newDepIds: SimpleSet;
-  before: ?Function;
+  before: ? Function;
   getter: Function;
   value: any;
 
-  constructor (
+  constructor(
     vm: Component,
     expOrFn: string | Function,
     cb: Function,
-    options?: ?Object,
-    isRenderWatcher?: boolean
+    options ? : ? Object,
+    isRenderWatcher ? : boolean
   ) {
     this.vm = vm
     if (isRenderWatcher) {
@@ -72,15 +81,15 @@ export default class Watcher {
     this.newDeps = []
     this.depIds = new Set()
     this.newDepIds = new Set()
-    this.expression = process.env.NODE_ENV !== 'production'
-      ? expOrFn.toString()
-      : ''
+    this.expression = process.env.NODE_ENV !== 'production' ?
+      expOrFn.toString() :
+      ''
     // parse expression for getter
     if (typeof expOrFn === 'function') {
       this.getter = expOrFn
     } else {
       // 拆分点语法this.getter 读值 触发data通过defineProperty设置的getter，在里面把Watcher收集到Dep的subs中去
-      this.getter = parsePath(expOrFn)
+      this.getter = parsePath(expOrFn)//getter是用来触发data里的属性的get函数
       if (!this.getter) {
         this.getter = noop
         process.env.NODE_ENV !== 'production' && warn(
@@ -91,22 +100,23 @@ export default class Watcher {
         )
       }
     }
-    this.value = this.lazy
-      ? undefined
-      : this.get()
+    this.value = this.lazy ?
+      undefined :
+      this.get()
   }
 
   /**
    * Evaluate the getter, and re-collect dependencies.
    */
   // 依赖收集阶段
-  get () {
+  get() {
+    // 先得把自己放到全局的Dep.target里去
     pushTarget(this)
     let value
     const vm = this.vm
-    // 得把自己放到全局的Dep.target里去
     try {
-      value = this.getter.call(vm, vm) //然后在读值 触发data通过defineProperty设置的getter，在里面把Watcher收集到Dep的subs中去
+      //然后在读值 触发data通过defineProperty设置的getter，在里面把Watcher收集到Dep的subs中去
+      value = this.getter.call(vm, vm)
     } catch (e) {
       if (this.user) {
         handleError(e, vm, `getter for watcher "${this.expression}"`)
@@ -119,10 +129,10 @@ export default class Watcher {
       if (this.deep) {
         traverse(value)
       }
-      popTarget()
-      this.cleanupDeps()
       // 退出依赖收集阶段，让给别的Watcher
       //相当于 Dep.target = null
+      popTarget()
+      this.cleanupDeps()
     }
     return value
   }
@@ -130,7 +140,7 @@ export default class Watcher {
   /**
    * Add a dependency to this directive.
    */
-  addDep (dep: Dep) {
+  addDep(dep: Dep) {
     const id = dep.id
     if (!this.newDepIds.has(id)) {
       this.newDepIds.add(id)
@@ -144,7 +154,7 @@ export default class Watcher {
   /**
    * Clean up for dependency collection.
    */
-  cleanupDeps () {
+  cleanupDeps() {
     let i = this.deps.length
     while (i--) {
       const dep = this.deps[i]
@@ -167,7 +177,7 @@ export default class Watcher {
    * Will be called when a dependency changes.
    */
   // 通过data设置的setter函数触发的dep.notify()来更新
-  update () {
+  update() {
     /* istanbul ignore else */
     if (this.lazy) {
       this.dirty = true
@@ -182,7 +192,7 @@ export default class Watcher {
    * Scheduler job interface.
    * Will be called by the scheduler.
    */
-  run () {
+  run() {
     if (this.active) {
       const value = this.get()
       // 如果更改的值和旧值不一样就set new value
@@ -214,7 +224,7 @@ export default class Watcher {
    * Evaluate the value of the watcher.
    * This only gets called for lazy watchers.
    */
-  evaluate () {
+  evaluate() {
     this.value = this.get()
     this.dirty = false
   }
@@ -222,7 +232,7 @@ export default class Watcher {
   /**
    * Depend on all deps collected by this watcher.
    */
-  depend () {
+  depend() {
     let i = this.deps.length
     while (i--) {
       this.deps[i].depend()
@@ -232,7 +242,7 @@ export default class Watcher {
   /**
    * Remove self from all dependencies' subscriber list.
    */
-  teardown () {
+  teardown() {
     if (this.active) {
       // remove self from vm's watcher list
       // this is a somewhat expensive operation so we skip it
@@ -248,4 +258,3 @@ export default class Watcher {
     }
   }
 }
-

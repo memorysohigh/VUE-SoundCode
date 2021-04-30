@@ -19,16 +19,16 @@ import {
 } from '../util/index'
 
 
-/**
- * In some cases we may want to disable observation inside a component's
- * update computation.
- */
+
 export let shouldObserve: boolean = true
 
 export function toggleObserving(value: boolean) {
   shouldObserve = value
 }
 
+/**
+ * @响应式7
+ */
 /*****观察者*****
  * 观察者类， 它附加到每个被观察的对象上
  * 对象。 一旦连接， 观察者转换目标
@@ -42,10 +42,17 @@ export class Observer { //observer 的作用是：将数据对象data的属性�
 
   constructor(value: any) {
     this.value = value
+    // data的每个对象都实例化一个Dep
     this.dep = new Dep()
     this.vmCount = 0
+    /**
+     * @响应式8
+     */
     // 在 value 对象上设置 __ob__ 属性，并且是不可遍历的enumerable=false
     def(value, '__ob__', this)
+    /**
+     * @响应式9
+     */
     if (Array.isArray(value)) {
       /**
        * value 为数组
@@ -66,12 +73,17 @@ export class Observer { //observer 的作用是：将数据对象data的属性�
       }
       this.observeArray(value)
     } else {
-      // value 为对象，为对象的每个属性（包括嵌套对象）设置响应式
+      /**
+       * @响应式14
+       * 开始对象的响应式
+       * value 为对象，为对象的每个属性（包括嵌套对象）设置响应式
+       */
       this.walk(value)
     }
   }
 
   /**
+   * @响应式15
    * 遍历对象上的每个 key，为每个 key 设置响应式
    * 仅当值为对象时才会走这里
    */
@@ -84,6 +96,7 @@ export class Observer { //observer 的作用是：将数据对象data的属性�
   }
 
   /**
+   * @响应式13
    * 遍历数组，为数组的每一项设置观察，处理数组元素为对象的情况
    */
   observeArray(items: Array < any > ) {
@@ -99,12 +112,18 @@ export class Observer { //observer 的作用是：将数据对象data的属性�
  * Augment a target Object or Array by intercepting
  * the prototype chain using __proto__
  */
+/**
+ * @响应式10
+ */
 function protoAugment(target, src: Object) {
   /* eslint-disable no-proto */
   target.__proto__ = src
   /* eslint-enable no-proto */
 }
 
+/**
+ * @响应式11
+ */
 function copyAugment(target: Object, src: Object, keys: Array < string > ) {
   for (let i = 0, l = keys.length; i < l; i++) {
     const key = keys[i] //方法名
@@ -114,9 +133,8 @@ function copyAugment(target: Object, src: Object, keys: Array < string > ) {
 }
 
 /**
- * 响应式处理的真正入口
+ * @响应式5
  * 为对象创建观察者实例，如果对象已经被观察过，则返回已有的观察者实例，否则创建新的观察者实例
- * @param {*} value 对象 => {}
  */
 export function observe(value: any, asRootData: ? boolean): Observer | void {
   if (!isObject(value) || value instanceof VNode) {
@@ -125,7 +143,10 @@ export function observe(value: any, asRootData: ? boolean): Observer | void {
   }
   let ob: Observer | void
   if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
-    // 如果 value 对象上存在 __ob__ 属性，则表示已经做过观察了，直接返回 __ob__ 属性
+    /**
+     * @响应式6
+     * 如果 value 对象上存在 __ob__ 属性，则表示已经做过观察了，直接返回 __ob__ 属性
+     */
     ob = value.__ob__
   } else if (
     shouldObserve &&
@@ -134,7 +155,7 @@ export function observe(value: any, asRootData: ? boolean): Observer | void {
     Object.isExtensible(value) &&
     !value._isVue
   ) {
-    // 创建观察者实例
+    // 没有__ob__创建观察者实例
     ob = new Observer(value)
   }
   if (asRootData && ob) {
@@ -144,6 +165,7 @@ export function observe(value: any, asRootData: ? boolean): Observer | void {
 }
 
 /**
+ * @响应式16
  * 拦截 obj[key] 的读取和设置操作：
  *   1、在第一次读取时收集依赖，比如执行 render 函数生成虚拟 DOM 时会有读取操作
  *   2、在更新时设置新值并通知依赖更新
@@ -182,6 +204,9 @@ export function defineReactive(
   // 提前把__ob__返回回来添加Watcher
   let childOb = !shallow && observe(val)
 
+  /**
+   * @响应式17
+   */
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
@@ -239,7 +264,7 @@ export function defineReactive(
       //****************************************** // defineReactive设置响应式******************************************
       childOb = !shallow && observe(newVal)
       // 依赖通知更新
-      dep.notify()
+      dep.notify() //到Dep调用notify ==>watcher的update() ==> watcher的run()
     }
   })
 }

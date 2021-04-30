@@ -6,6 +6,11 @@ import { lifecycleMixin } from './lifecycle'
 import { warn } from '../util/index'
 import Watcher from '../observer/watcher'
 
+/**
+ * @响应式1
+ * vue构造函数通过initMixin的initState函数进行初始化
+ */
+
 // ****Vue构造函数
 // new Vue时传进来的data、钩子函数、methods、watch、computed。。。。
 function Vue (options) {
@@ -17,9 +22,6 @@ function Vue (options) {
   }
   //****调用 Vue.prototype._init 方法，该方法是在 initMixin 中定义的
   this._init(options)
-  let b = new Watcher(this, 'b.n', (val) => {
-    console.log('❤❤❤❤❤❤',val);
-  })
 }
 
 initMixin(Vue)
