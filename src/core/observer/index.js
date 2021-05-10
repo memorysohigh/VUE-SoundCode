@@ -48,7 +48,7 @@ export class Observer { //observer 的作用是：将数据对象data的属性�
     /**
      * @响应式8
      */
-    // 在 value 对象上设置 __ob__ 属性，并且是不可遍历的enumerable=false
+    // 在 value 对象上设置 __ob__ 属性，值为Observer实例，并且是不可遍历的enumerable=false
     def(value, '__ob__', this)
     /**
      * @响应式9
