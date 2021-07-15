@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue 源码解读</title>
+</head>
+
+<body>
+  <div id="app">
+    <p><strong style="margin: auto;">{{time}}</strong></p>
+    <textarea name="阿萨德" id="asd" cols="30" rows="10" @keyup.enter='stop()' @input.once="start()"></textarea>
+  </div>
+  <script src="../dist/vue.js"></script>
+
+  <script>
+    let me
+    this.vue = new Vue({
+      el: '#app',
+      mixin: [],
+      components: {},
+      data() {
+        return {
+         jishiqi:null,
+          time: 0,
+          a: 'father',
+          b: {
+            n: 1,
+            m: 2,
+          },
+          mm: [1, 2, 3, 4, 5, 6],
+          msg: 'hello Vue!'
+        }
+
+      },
+      watch: {},
+      computed: {
+        nm: {
+          get() {
+            return this.b.n + this.b.m
+          },
+          set(newVal) {
+
+          }
+        }
+      },
+      beforeCreate() {},
+      created() {
+        me = this
+        me.mm.push(33)
+      },
+      methods: {
+        start() {
+          this.jishiqi = setInterval(() => {
+            this.time++
+          }, 1000);
+        },
+        stop() {
+          clearInterval(this.jishiqi)
+          console.log('fsdfsdf');
+        }
+      },
+
+    })
+
+  </script>
+  <script>
+    vue.obj = {
+      name: 'obj',
+      age: 16
+    }
+    vue.observeFun(vue.obj)
+    let b = new vue.watcherConstructor(vue, 'obj', () => {
+      console.log('响应式已经应用！！！')
+    })
+    // let node = document.getElementById('div').append(document.createElement("obj.name<input type='text' v-model='obj.name'>"))
+
+  </script>
+</body>
+
+
+
+</html>
