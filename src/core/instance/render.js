@@ -70,7 +70,7 @@ export function setCurrentRenderingInstance(vm: Component) {
   currentRenderingInstance = vm
 }
 
-export function renderMixin(Vue: Class < Component > ) {
+export function renderMixin(Vue: Class<Component> ) {
   // install runtime convenience helpers
   installRenderHelpers(Vue.prototype)
 
@@ -84,6 +84,7 @@ export function renderMixin(Vue: Class < Component > ) {
       render,
       _parentVnode
     } = vm.$options
+    console.log(1111,vm);
 
     if (_parentVnode) {
       vm.$scopedSlots = normalizeScopedSlots(

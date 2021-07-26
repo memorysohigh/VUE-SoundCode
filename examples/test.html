@@ -67,31 +67,31 @@
       }
 
     }
-    const blogPost = Vue.component('blog-post', {
-      render: function (createElement) {
-        var header = this.$slots.header
-        var body = this.$slots.default
-        var footer = this.$slots.footer
-        return createElement('div', [
-          createElement('header', header),
-          createElement('main', body),
-          createElement('footer', footer)
-        ])
-      }
-    })
+    // const blogPost = Vue.component('blog-post', {
+    //   render: function (createElement) {
+    //     var header = this.$slots.header
+    //     var body = this.$slots.default
+    //     var footer = this.$slots.footer
+    //     return createElement('div', [
+    //       createElement('header', header),
+    //       createElement('main', body),
+    //       createElement('footer', footer)
+    //     ])
+    //   }
+    // })
     this.vue = new Vue({
       el: '#app',
       mixin: [],
       components: {
         componentA: componentA,
-        blogPost,
-        componentB: {
-          render(createElement) {
-            return createElement('div', {
-              id: 'asd'
-            }, 'render')
-          },
-        }
+        // blogPost,
+        // componentB: {
+        //   render(createElement) {
+        //     return createElement('div', {
+        //       id: 'asd'
+        //     }, 'render')
+        //   },
+        // }
       },
       data() {
         return {
@@ -131,7 +131,7 @@
     })
 
   </script>
-  <script>
+  <!-- <script>
     vue.obj = {
       name: 'obj',
       age: 16
@@ -141,7 +141,7 @@
       console.log('响应式已经应用！！！')
     })
     let node = document.getElementById('div').append(document.createElement("obj.name<input type='text' v-model='obj.name'>"))
-  </script>
+  </script> -->
 </body>
 
 

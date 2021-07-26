@@ -14,8 +14,8 @@ let uid = 0
  */
 export default class Dep {
   static target: ? Watcher;
-  id: number;
-  subs: Array < Watcher > ;
+  static id: number;
+  static subs: Array<Watcher> ;
 
   constructor() {
     this.id = uid++
@@ -25,7 +25,7 @@ export default class Dep {
   addSub(sub: Watcher) {
     this.subs.push(sub)
   }
-  // 移除依赖（Watcher）
+  // 移除依赖（Watcher） 删除subs中的sub
   removeSub(sub: Watcher) {
     remove(this.subs, sub)
   }

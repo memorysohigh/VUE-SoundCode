@@ -99,7 +99,7 @@ export class Observer { //observer 的作用是：将数据对象data的属性�
    * @响应式13
    * 遍历数组，为数组的每一项设置观察，处理数组元素为对象的情况
    */
-  observeArray(items: Array < any > ) {
+  observeArray(items: Array<any> ) {
     for (let i = 0; i < items.length; i++) {
       observe(items[i])
     }
@@ -124,7 +124,7 @@ function protoAugment(target, src: Object) {
 /**
  * @响应式11
  */
-function copyAugment(target: Object, src: Object, keys: Array < string > ) {
+function copyAugment(target: Object, src: Object, keys: Array<string> ) {
   for (let i = 0, l = keys.length; i < l; i++) {
     const key = keys[i] //方法名
     // 把七个重写好的数组方法设置到每个数组上
@@ -180,12 +180,12 @@ export function defineReactive(
   // *************************************************************************************************************
   // *************************************************************************************************************
   val: any, //传进来的值，在set里面判断，与旧值一样你直接return，不一样就修改，然后get里面获取的时候，就得到了这个val。
-  customSetter ? : ? Function,
-  shallow ? : boolean
+  customSetter ?: ? Function,
+  shallow ?: boolean
 ) {
   // 实例化 Dep，每一个 对象 都实例化一个 Dep
   const dep = new Dep()
-  // 获取 obj[key] 的属性描述符，发现它 configurable=false 的话直接 return
+  // 获取 obj[key] 的属性描述符，发现它 configurable=false 的话（不可配置）直接 return
   const property = Object.getOwnPropertyDescriptor(obj, key) //属性配置对象 描述符对象
   if (property && property.configurable === false) {
     return
@@ -198,7 +198,7 @@ export function defineReactive(
     val = obj[key]
   }
 
-  // 递归调用，处理 val 即 obj[key] 的值为对象的情况，保证对象中的所有 key 都被观察
+  // 处理 val 即 obj[key] 的值为对象的情况，保证对象中的所有 key 都被观察
   // obj的子对象属性递归回去调observe
   // 如果子属性不是对象，observe函数里会判定，然后直接return
   // 提前把__ob__返回回来添加Watcher
@@ -212,6 +212,7 @@ export function defineReactive(
     configurable: true,
     get: function reactiveGetter() {
       const value = getter ? getter.call(obj) : val
+
       // 判断是不是watcher触发的getter，是的话Dep.target里面肯定有Watcher，
       // 于是把Watcher添加到Dep中去
       // 不是的话直接返回值
@@ -274,7 +275,7 @@ export function defineReactive(
  * triggers change notification if the property doesn't
  * already exist.
  */
-export function set(target: Array < any > | Object, key: any, val: any): any {
+export function set(target: Array<any> | Object, key: any, val: any): any {
   if (process.env.NODE_ENV !== 'production' &&
     (isUndef(target) || isPrimitive(target))
   ) {
@@ -309,7 +310,7 @@ export function set(target: Array < any > | Object, key: any, val: any): any {
 /**
  * Delete a property and trigger change if necessary.
  */
-export function del(target: Array < any > | Object, key: any) {
+export function del(target: Array<any> | Object, key: any) {
   if (process.env.NODE_ENV !== 'production' &&
     (isUndef(target) || isPrimitive(target))
   ) {
@@ -341,7 +342,7 @@ export function del(target: Array < any > | Object, key: any) {
  * 遍历每个数组元素，递归处理数组项为对象的情况，为其添加依赖
  * 因为前面的递归阶段无法为数组中的对象元素添加依赖
  */
-function dependArray(value: Array < any > ) {
+function dependArray(value: Array<any> ) {
   for (let e, i = 0, l = value.length; i < l; i++) {
     e = value[i]
     e && e.__ob__ && e.__ob__.dep.depend()
