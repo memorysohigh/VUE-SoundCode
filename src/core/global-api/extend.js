@@ -74,7 +74,7 @@ export function initExtend (Vue: GlobalAPI) {
     Sub.extendOptions = extendOptions
     Sub.sealedOptions = extend({}, Sub.options)
 
-    // cache constructor
+    // 缓存构造函数 避免多次执⾏ Vue.extend 的时候对同⼀个⼦组件重复构造。
     cachedCtors[SuperId] = Sub
     return Sub
   }

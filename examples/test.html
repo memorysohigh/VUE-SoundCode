@@ -15,7 +15,7 @@
     <p style="display: inline;">{{mm}}</p><button @click='mm.push(33)'>添加33</button>
     <component-a v-model="a" v-bind:b="b" @input></component-a>
     <component-b></component-b>
-    <blog-post>
+    <!-- <blog-post>
       <template v-slot:header>
         <h1>About Me</h1>
       </template>
@@ -29,7 +29,7 @@
 
       <p>If I have some content down here, it will also be included in vm.$slots.default.</p>
 
-    </blog-post>
+    </blog-post> -->
     <div>nm
       <input type="text" v-model='nm'>
     </div>
@@ -40,6 +40,7 @@
   <script>
     let me
     const componentA = {
+      name: 'componentA',
       props: [
         'value', 'b'
       ],
@@ -80,18 +81,19 @@
     //   }
     // })
     this.vue = new Vue({
+      name: 'ROOT~~~~~~~VUE',
       el: '#app',
       mixin: [],
       components: {
         componentA: componentA,
         // blogPost,
-        // componentB: {
-        //   render(createElement) {
-        //     return createElement('div', {
-        //       id: 'asd'
-        //     }, 'render')
-        //   },
-        // }
+        componentB: {
+          render(createElement) {
+            return createElement('div', {
+              id: 'asd'
+            }, 'render')
+          },
+        }
       },
       data() {
         return {
@@ -100,18 +102,18 @@
             n: 1,
             m: 2,
           },
-            mm:[1,2,3,4,5,6],
+          mm: [1, 2, 3, 4, 5, 6],
           msg: 'hello Vue!'
         }
 
       },
       watch: {},
       computed: {
-        nm:{
-          get(){
-            return this.b.n+this.b.m
+        nm: {
+          get() {
+            return this.b.n + this.b.m
           },
-          set(newVal){
+          set(newVal) {
 
           }
         }
@@ -145,5 +147,65 @@
 </body>
 
 
+<script>
+  // 抽象建造者
+  class Builder{
+    buildPartA() {}
+    buildPartB() {}
+    buildPartC() {}
+    buildProduct() {}
+  }
+
+  // 具体建造者
+  class ConcreteBuilder extends Builder{
+    constructor(product) {
+      super();
+      this.product = product;
+    }
+    static product;
+
+    buildPartA() {}
+    buildPartB() {}
+    buildPartC() {}
+
+    // 最终组建一个产品
+    buildProduct() {
+      return this.product;
+    }
+  }
+
+  // 产品角色
+  class Product {
+    doSomething() {
+      // 独立业务
+    }
+  }
+
+  // 指挥者
+  class Director {
+    static _builder;
+    constructor(builder) {
+      this._builder = builder;
+    }
+
+    set builder(builder) {
+      this._builder = builder;
+    }
+
+    // 将处理建造的流程交给指挥者
+     constructorProduct() {
+      this._builder.buildPartA();
+      this._builder.buildPartB();
+      this._builder.buildPartC();
+      return this._builder.buildProduct();
+    }
+  }
+
+  // 使用
+  const builder = new ConcreteBuilder(new Product());
+  const director = new Director(builder);
+  const product = director.constructorProduct();
+
+</script>
 
 </html>

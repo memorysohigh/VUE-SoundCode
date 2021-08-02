@@ -133,11 +133,11 @@ export function createPatchFunction (backend) {
     index
   ) {
     if (isDef(vnode.elm) && isDef(ownerArray)) {
-      // This vnode was used in a previous render!
-      // now it's used as a new node, overwriting its elm would cause
-      // potential patch errors down the road when it's used as an insertion
-      // reference node. Instead, we clone the node on-demand before creating
-      // associated DOM element for it.
+      //这个vnode在以前的渲染中使用过!
+      //现在它被用作一个新节点，覆盖它的榆树将导致
+      //当它被用作插入时，潜在的补丁错误
+      //引用节点。相反， 我们在创建节点之前按需克隆节点
+      //对应的DOM元素。
       vnode = ownerArray[index] = cloneVNode(vnode)
     }
 
@@ -710,7 +710,7 @@ export function createPatchFunction (backend) {
     if (isUndef(oldVnode)) {
       //创建新的根元素
       isInitialPatch = true
-      // 由于我们传⼊的 oldVnode 实际上是⼀个 DOM container，所以 isRealElement 为 true，接下来⼜
+      // 由于我们传⼊的 oldVnode 实际上是⼀个 DOM 容器，所以 isRealElement 为 true，接下来⼜
       // 通过 emptyNodeAt ⽅法把 oldVnode 转换成 VNode 对象，然后再调⽤ createElm ⽅法，这个
       // ⽅法在这⾥⾮常重要，
       createElm(vnode, insertedVnodeQueue)
@@ -800,7 +800,6 @@ export function createPatchFunction (backend) {
         }
       }
     }
-
     invokeInsertHook(vnode, insertedVnodeQueue, isInitialPatch)
     return vnode.elm
   }

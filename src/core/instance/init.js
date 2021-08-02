@@ -39,6 +39,7 @@ export function initMixin (Vue: Class<Component>) {
     if (options && options._isComponent) {
       initInternalComponent(vm, options)
     } else {
+      // mergeOptions的功能是把 Vue 构造函数的 options 和⽤ 户传⼊ 的 options 做⼀ 层合并， 到 vm.$options 上。
       vm.$options = mergeOptions(
         // ***第一个参数就是 Vue.constructor.options（resolveConstructorOptions返回的是Vue.constructor.options）
         // ***第二个参数是我们调用Vue构造函数时的参数选项

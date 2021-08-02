@@ -109,9 +109,9 @@ export function createComponent (
     return
   }
 
+  // baseCtor 实际上就是 Vue构造函数，
   const baseCtor = context.$options._base
-
-  //普通选项对象:将其转换为构造函数
+  //将 普通选项对象 转换为构造函数
   if (isObject(Ctor)) {
     Ctor = baseCtor.extend(Ctor)
   }
@@ -182,7 +182,8 @@ export function createComponent (
     }
   }
 
-  // install component management hooks onto the placeholder node
+  // installComponentHooks 的过程就是把 componentVNodeHooks 的钩⼦ 函数合并到
+  // data.hook 中， 在 VNode 执⾏ patch 的过程中执⾏ 相关的钩⼦ 函数，
   installComponentHooks(data)
 
   // return a placeholder vnode
@@ -201,7 +202,6 @@ export function createComponent (
   if (__WEEX__ && isRecyclableComponent(vnode)) {
     return renderRecyclableComponentTemplate(vnode)
   }
-
   return vnode
 }
 

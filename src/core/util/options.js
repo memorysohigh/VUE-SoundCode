@@ -298,8 +298,8 @@ export function validateComponentName (name: string) {
 }
 
 /**
- * Ensure all props option syntax are normalized into the
- * Object-based format.
+ * * 确保所有的道具选项语法都规范化到
+ * * 基于对象的格式。
  */
 function normalizeProps (options: Object, vm: ?Component) {
   const props = options.props
@@ -337,6 +337,7 @@ function normalizeProps (options: Object, vm: ?Component) {
 
 /**
  * Normalize all injections into Object-based format
+ * 将所有注入规范化为基于对象的格式
  */
 function normalizeInject (options: Object, vm: ?Component) {
   const inject = options.inject
@@ -407,10 +408,10 @@ export function mergeOptions (
   normalizeInject(child, vm)
   normalizeDirectives(child)
 
-  // Apply extends and mixins on the child options,
-  // but only if it is a raw options object that isn't
-  // the result of another mergeOptions call.
-  // Only merged options has the _base property.
+  //应用扩展和混合子选项，
+  //但仅当它是一个非原始选项对象时
+  //另一个mergeOptions调用的结果。
+  //只有合并的选项具有_base属性。
   if (!child._base) {
     if (child.extends) {
       parent = mergeOptions(parent, child.extends, vm)
