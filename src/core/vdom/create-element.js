@@ -43,7 +43,14 @@ export function createElement (
   }
   return _createElement(context, tag, data, children, normalizationType)
 }
-
+/**
+ * _createElement⽅ 法有 5 个参数，
+ * context 表⽰ VNode 的上下⽂ 环境， 它是 Component 类型；
+ * tag 表⽰ 标签， 它可以是⼀个字符串， 也可以是⼀个 Component；
+ * data 表⽰ VNode 的数据， 它是⼀个 VNodeData 类型， 可以在 flow / vnode.js 中找到它的定义，
+ * children 表⽰当前 VNode 的⼦节点， 它是任意类型的，它接下来需要被规范为标准的 VNode数组；
+ * normalizationType 表⽰⼦节点规范的类型，类型不同规范的⽅ 法也就不⼀ 样，它主要是参考 render 函数是编译⽣ 成的还是⽤ 户⼿ 写的。
+*/
 export function _createElement (
   context: Component,
   tag?: string | Class<Component> | Function | Object,
@@ -92,29 +99,28 @@ export function _createElement (
   } else if (normalizationType === SIMPLE_NORMALIZE) {
     children = simpleNormalizeChildren(children)
   }
+
   let vnode, ns
   if (typeof tag === 'string') {
     let Ctor
     ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag)
     if (config.isReservedTag(tag)) {
-      // platform built-in elements
+      // //平台内置元素
       if (process.env.NODE_ENV !== 'production' && isDef(data) && isDef(data.nativeOn) && data.tag !== 'component') {
         warn(
           `The .native modifier for v-on is only valid on components but it was used on <${tag}>.`,
           context
         )
       }
-      vnode = new VNode(
-        config.parsePlatformTagName(tag), data, children,
-        undefined, undefined, context
-      )
+      vnode = new VNode(config.parsePlatformTagName(tag), data, children,undefined, undefined, context)
     } else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
-      // component
+      // component  tag ⼀个 Component 类型，则直接调⽤
+      // createComponent 创建⼀个组件类型的 VNode 节点
       vnode = createComponent(Ctor, data, context, children, tag)
     } else {
-      // unknown or unlisted namespaced elements
-      // check at runtime because it may get assigned a namespace when its
-      // parent normalizes children
+      //未知或未列出的命名空间元素
+      //在运行时检查，因为它可能会被分配一个命名空间
+      //父母正常化的孩子
       vnode = new VNode(
         tag, data, children,
         undefined, undefined, context

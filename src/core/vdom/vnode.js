@@ -1,5 +1,13 @@
 /* @flow */
-
+/**
+ *VNode 是对真实 DOM 的⼀种抽象描述，它的核⼼定义⽆⾮就⼏个关键属性，标签名、数据、⼦
+ *节点、键值等，其它属性都是都是⽤来扩展 VNode 的灵活性以及实现⼀些特殊 feature 的。由于 VNode
+ *只是⽤来映射到真实 DOM 的渲染，不需要包含操作 DOM 的⽅法，因此它是⾮常轻量和简单的。
+ *Virtual DOM 除了它的数据结构的定义，映射到真实的 DOM 实际上要经历 VNode 的 create、diff、
+ *patch 等过程。那
+ *
+ *
+*/
 export default class VNode {
   tag: string | void;
   data: VNodeData | void;

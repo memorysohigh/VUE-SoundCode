@@ -30,7 +30,10 @@ Vue.config.isUnknownElement = isUnknownElement
 extend(Vue.options.directives, platformDirectives)
 extend(Vue.options.components, platformComponents)
 
-// install platform patch function
+// 判断是不是服务器渲染，
+// 因为在服务端渲染中，
+// 没有真实的浏览器 DOM 环境，所以不需要把 VNode 最终转换成 DOM，因此是⼀个空函数，⽽在浏览
+// 器端渲染中，它指向了 patch ⽅法，它的定义在 src/platforms/web/runtime/patch.js 中
 Vue.prototype.__patch__ = inBrowser ? patch : noop
 
 // public mount method

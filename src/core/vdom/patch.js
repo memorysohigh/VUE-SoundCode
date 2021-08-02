@@ -122,6 +122,7 @@ export function createPatchFunction (backend) {
 
   let creatingElmInVPre = 0
 
+  // createElm 的作⽤是通过虚拟节点创建真实的 DOM 并插⼊到它的⽗节点中。
   function createElm (
     vnode,
     insertedVnodeQueue,
@@ -707,8 +708,11 @@ export function createPatchFunction (backend) {
     const insertedVnodeQueue = []
 
     if (isUndef(oldVnode)) {
-      // empty mount (likely as component), create new root element
+      //创建新的根元素
       isInitialPatch = true
+      // 由于我们传⼊的 oldVnode 实际上是⼀个 DOM container，所以 isRealElement 为 true，接下来⼜
+      // 通过 emptyNodeAt ⽅法把 oldVnode 转换成 VNode 对象，然后再调⽤ createElm ⽅法，这个
+      // ⽅法在这⾥⾮常重要，
       createElm(vnode, insertedVnodeQueue)
     } else {
       const isRealElement = isDef(oldVnode.nodeType)
